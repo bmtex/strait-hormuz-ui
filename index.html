@@ -4,205 +4,308 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>HORMUZ WATCH — Is the Strait Open?</title>
-  <meta name="description" content="AI-powered real-time monitor tracking whether the Strait of Hormuz is open or closed, based on Trump's Truth Social posts."/>
-  <meta property="og:title" content="HORMUZ WATCH"/>
-  <meta property="og:description" content="Is the Strait of Hormuz open? AI reads Trump's Truth Social posts to find out."/>
+  <meta name="description" content="AI reads Trump's Truth Social posts to determine if the Strait of Hormuz is open or closed. Updated every 20 minutes."/>
+  <meta property="og:title" content="HORMUZ WATCH — Is the Strait Open?"/>
+  <meta property="og:description" content="AI reads Trump's Truth Social posts to determine if the Strait of Hormuz is open or closed."/>
   <meta property="og:type" content="website"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --open:      #2ecc71;
-      --closed:    #e74c3c;
-      --uncertain: #f39c12;
-      --bg:        #0a0a0a;
-      --surface:   #111111;
-      --surface2:  #0e0e0e;
-      --border:    #1e1e1e;
-      --border2:   #222222;
-      --text:      #e8e2d4;
-      --muted:     #666666;
-      --dim:       #444444;
-      --dimmer:    #333333;
+      --open:    #2ecc71;
+      --closed:  #e74c3c;
+      --unc:     #f39c12;
+      --bg:      #080808;
+      --s1:      #111;
+      --s2:      #0d0d0d;
+      --s3:      #161616;
+      --b1:      #1e1e1e;
+      --b2:      #2a2a2a;
+      --b3:      #333;
+      --text:    #ddd8cc;
+      --text2:   #aaa49a;
+      --text3:   #666;
+      --text4:   #3a3a3a;
     }
     html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg); color: var(--text);
-      font-family: 'IBM Plex Sans', sans-serif;
-      min-height: 100vh; overflow-x: hidden;
-    }
-    body::before {
-      content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    }
-    body::after {
-      content: ''; position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 700px; height: 500px; border-radius: 50%;
-      background: radial-gradient(ellipse, var(--glow, #f39c1212) 0%, transparent 70%);
-      z-index: 0; pointer-events: none; transition: background 1.5s ease;
-    }
-    .wrap { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+    body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .4;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); }
+    body::after { content: ''; position: fixed; top: -300px; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; border-radius: 50%;
+      background: radial-gradient(ellipse, var(--glow,#f39c1210) 0%, transparent 70%);
+      z-index: 0; pointer-events: none; transition: background 2s ease; }
 
-    .masthead { display: flex; align-items: baseline; gap: 14px; margin-bottom: .3rem; }
-    h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(44px,9vw,80px); letter-spacing: 3px; color: var(--text); line-height: 1; }
-    .live-badge { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; background: #c0392b; color: #fff; padding: 3px 8px; border-radius: 2px; animation: blink 2s step-end infinite; }
-    @keyframes blink { 50% { opacity: .35; } }
-    .subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: .5px; margin-bottom: 1.75rem; }
+    .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 6rem; }
 
-    .hero { border: 1px solid var(--border2); border-radius: 4px; padding: 1.75rem 2rem; background: var(--surface); margin-bottom: 1.25rem; transition: border-color .8s; }
-    .hero.open     { border-color: #1a7a4a; }
-    .hero.closed   { border-color: #8b1a1a; }
-    .hero.uncertain{ border-color: #7a5c1a; }
-    .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2.5px; color: var(--dim); margin-bottom: .5rem; }
-    .big { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px,13vw,100px); letter-spacing: 4px; line-height: 1; transition: color .8s; }
-    .big.open      { color: var(--open); }
-    .big.closed    { color: var(--closed); }
-    .big.uncertain { color: var(--uncertain); }
-    .hero-meta { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: .85rem; }
-    .mc  { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--dim); }
-    .mc span { color: #888; }
-    .conf-row { display: flex; align-items: center; gap: 10px; margin-top: .85rem; }
-    .cl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--dim); }
-    .ct { flex: 1; height: 2px; background: var(--border2); border-radius: 2px; overflow: hidden; }
-    .cf { height: 100%; border-radius: 2px; transition: width 1s ease, background .8s; }
-    .cn { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #888; min-width: 36px; text-align: right; }
-    .rsn { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: .75rem 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.7; color: #777; margin-top: .85rem; min-height: 52px; }
-    .src { display: inline-block; margin-top: .6rem; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--dim); text-decoration: none; border-bottom: 1px solid var(--border2); transition: color .2s, border-color .2s; }
-    .src:hover { color: #888; border-color: #444; }
+    /* HEADER */
+    .site-header { margin-bottom: 2rem; border-bottom: 1px solid var(--b1); padding-bottom: 1.5rem; }
+    .masthead { display: flex; align-items: baseline; gap: 16px; margin-bottom: .4rem; }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 10vw, 96px); letter-spacing: 4px; color: var(--text); line-height: 1; }
+    .live-badge { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; background: #c0392b; color: #fff; padding: 4px 10px; border-radius: 2px; animation: blink 2s step-end infinite; }
+    @keyframes blink { 50% { opacity: .3; } }
+    .subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text3); letter-spacing: .5px; }
+    .disclaimer { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); margin-top: .4rem; font-style: italic; }
 
-    .stats-bar { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 1.25rem; }
-    .stat { background: var(--surface); padding: .85rem 1rem; text-align: center; }
-    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; }
-    .stat-num.cn-c { color: var(--closed); }
-    .stat-num.on-c { color: var(--open); }
-    .stat-num.tn-c { color: #888; }
-    .stat-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9px; letter-spacing: 1.5px; color: var(--dim); margin-top: 2px; }
+    /* HERO */
+    .hero { border: 1px solid var(--b1); border-radius: 6px; background: var(--s1); margin-bottom: 1.5rem; overflow: hidden; transition: border-color .8s; }
+    .hero.open      { border-color: #1d6b3e; }
+    .hero.closed    { border-color: #7a1a1a; }
+    .hero.uncertain { border-color: #6b4f10; }
+    .hero-top { padding: 2rem 2.5rem 1.5rem; }
+    .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 3px; color: var(--text3); margin-bottom: .5rem; }
+    .big-status { font-family: 'Bebas Neue', sans-serif; font-size: clamp(72px,16vw,128px); letter-spacing: 6px; line-height: .95; transition: color .8s; }
+    .big-status.open      { color: var(--open); }
+    .big-status.closed    { color: var(--closed); }
+    .big-status.uncertain { color: var(--unc); }
+    .snark { font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: var(--text2); margin-top: .75rem; line-height: 1.5; min-height: 22px; font-style: italic; }
+    .conf-row { display: flex; align-items: center; gap: 12px; margin-top: 1.25rem; }
+    .conf-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); white-space: nowrap; }
+    .conf-track { flex: 1; height: 3px; background: var(--b1); border-radius: 3px; overflow: hidden; }
+    .conf-fill  { height: 100%; border-radius: 3px; transition: width 1.2s ease, background .8s; }
+    .conf-num   { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text2); min-width: 42px; text-align: right; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 2rem; padding: 1rem 2.5rem; background: var(--s2); border-top: 1px solid var(--b1); }
+    .mc { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+    .mc strong { color: var(--text2); font-weight: 400; }
 
-    .chart-wrap { border: 1px solid var(--border2); border-radius: 4px; background: var(--surface); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; }
-    .chart-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--dim); margin-bottom: 1rem; }
-    .chart { display: flex; align-items: flex-end; gap: 3px; height: 64px; }
+    /* TRUTH SOCIAL CARD */
+    .ts-card { margin: 0 2.5rem 1.5rem; border: 1px solid var(--b1); border-radius: 6px; background: var(--s2); overflow: hidden; }
+    .ts-card-header { display: flex; align-items: center; gap: 12px; padding: .85rem 1rem; border-bottom: 1px solid var(--b1); }
+    .ts-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #c0392b, #8b1a1a); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #fff; flex-shrink: 0; }
+    .ts-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .ts-handle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+    .ts-logo { margin-left: auto; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; color: var(--text4); }
+    .ts-body { padding: 1rem 1rem .85rem; font-size: 14px; line-height: 1.7; color: var(--text2); }
+    .ts-footer { padding: .6rem 1rem; border-top: 1px solid var(--b1); display: flex; align-items: center; justify-content: space-between; }
+    .ts-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); }
+    .ts-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-decoration: none; border-bottom: 1px solid var(--b1); transition: color .2s; }
+    .ts-link:hover { color: var(--text2); }
+
+    /* METRICS ROW */
+    .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--b1); border: 1px solid var(--b1); border-radius: 6px; overflow: hidden; }
+    .stat { background: var(--s1); padding: 1rem 1.25rem; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 1px; }
+    .stat-num.c { color: var(--closed); }
+    .stat-num.o { color: var(--open); }
+    .stat-num.t { color: var(--text3); }
+    .stat-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--text3); margin-top: 3px; }
+
+    /* Y THO CARD */
+    .ytho-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+    .ytho-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--text3); padding: 1rem 1.25rem .75rem; border-bottom: 1px solid var(--b1); }
+    .ytho-body { display: flex; align-items: center; gap: 1rem; padding: .85rem 1.25rem; flex: 1; }
+    .ytho-gif { width: 72px; height: 72px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
+    .ytho-text { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--text); line-height: 1.1; }
+    .ytho-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); margin-top: .35rem; font-style: italic; line-height: 1.5; }
+
+    /* CHART */
+    .chart-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 6px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .chart-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--text3); margin-bottom: 1.25rem; }
+    .chart { display: flex; align-items: flex-end; gap: 4px; height: 80px; }
     .bar { flex: 1; border-radius: 2px 2px 0 0; min-width: 3px; cursor: default; position: relative; transition: opacity .2s; }
     .bar:hover { opacity: .75; }
-    .bar:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); background: #1a1a1a; border: 1px solid var(--border2); color: #888; font-family: 'IBM Plex Mono', monospace; font-size: 9px; padding: 3px 7px; border-radius: 2px; white-space: nowrap; pointer-events: none; z-index: 10; }
-    .chart-axis { display: flex; justify-content: space-between; margin-top: 6px; }
-    .axis-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--dimmer); }
+    .bar:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--s3); border: 1px solid var(--b2); color: var(--text2); font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 8px; border-radius: 3px; white-space: nowrap; z-index: 10; pointer-events: none; }
+    .chart-legend { display: flex; gap: 1.5rem; margin-top: .75rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-    hr { border: none; border-top: 1px solid #161616; margin: 1.5rem 0; }
+    /* TIMELINE */
+    .tl-header { margin-bottom: 1.25rem; }
+    .tl-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2.5px; color: var(--text3); }
+    .tl-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); margin-top: .3rem; }
+    .tl { display: flex; flex-direction: column; gap: 1rem; }
+    .tl-card { border: 1px solid var(--b1); border-radius: 6px; background: var(--s1); overflow: hidden; transition: border-color .3s; }
+    .tl-card:hover { border-color: var(--b2); }
+    .tl-card.open   { border-left: 3px solid var(--open); }
+    .tl-card.closed { border-left: 3px solid var(--closed); }
+    .tl-card-top { display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem .75rem; flex-wrap: wrap; }
+    .tl-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; padding: 3px 10px; border-radius: 3px; font-weight: 500; }
+    .tl-tag.open   { color: var(--open);   background: #061408; border: 1px solid #1a4a2e; }
+    .tl-tag.closed { color: var(--closed); background: #140606; border: 1px solid #4a1a1a; }
+    .tl-conf { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+    .tl-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); margin-left: auto; }
+    .tl-post { padding: 0 1.25rem .85rem; font-size: 14px; line-height: 1.75; color: var(--text); font-style: italic; border-bottom: 1px solid var(--b1); }
+    .tl-card-foot { display: flex; align-items: center; justify-content: space-between; padding: .65rem 1.25rem; }
+    .tl-reasoning { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); line-height: 1.5; flex: 1; }
+    .tl-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-decoration: none; border-bottom: 1px solid var(--b1); white-space: nowrap; margin-left: 1rem; transition: color .2s; }
+    .tl-link:hover { color: var(--text2); }
+    .state-msg { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text4); text-align: center; padding: 3rem 0; line-height: 2; }
 
-    .tl-hdr { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; }
-    .tl-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2.5px; color: var(--dim); }
-    .tl-note  { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--dimmer); }
-    .tl { display: flex; flex-direction: column; }
-    .ti { display: grid; grid-template-columns: 10px 1fr; gap: 0 16px; padding-bottom: 22px; }
-    .tl-left { display: flex; flex-direction: column; align-items: center; }
-    .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-    .dot.open   { background: var(--open);   box-shadow: 0 0 8px #2ecc7155; }
-    .dot.closed { background: var(--closed); box-shadow: 0 0 8px #e74c3c55; }
-    .connector  { flex: 1; width: 1px; background: #181818; margin-top: 5px; }
-    .tmeta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 5px; }
-    .tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 2px 8px; border-radius: 2px; }
-    .tag.open   { color: var(--open);   border: 1px solid #1a4a2e; background: #061408; }
-    .tag.closed { color: var(--closed); border: 1px solid #4a1a1a; background: #140606; }
-    .tconf { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #3a3a3a; }
-    .ttime { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #252525; }
-    .ttext { font-size: 12px; color: #4a4a4a; line-height: 1.6; font-style: italic; margin-bottom: 4px; }
-    .treason { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #333; line-height: 1.5; margin-bottom: 5px; }
-    .tlink { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #2a2a2a; text-decoration: none; border-bottom: 1px solid #1e1e1e; transition: color .2s, border-color .2s; }
-    .tlink:hover { color: #666; border-color: #444; }
-    .state-msg { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2a2a2a; text-align: center; padding: 2.5rem 0; line-height: 1.8; }
+    .footer { margin-top: 4rem; border-top: 1px solid var(--b1); padding-top: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-align: center; line-height: 2; }
 
-    .footer { margin-top: 3rem; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #252525; text-align: center; line-height: 2; }
-    .footer a { color: #333; text-decoration: none; border-bottom: 1px solid #222; }
-
-    @media (max-width: 480px) {
-      .wrap { padding: 1.5rem 1rem 3rem; }
-      .hero { padding: 1.25rem; }
+    @media (max-width: 600px) {
+      .wrap { padding: 1.5rem 1rem 4rem; }
+      .hero-top { padding: 1.5rem 1.25rem 1rem; }
+      .hero-meta { padding: .85rem 1.25rem; gap: 1rem; }
+      .ts-card { margin: 0 1.25rem 1.25rem; }
+      .metrics { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
+  <header class="site-header">
     <div class="masthead">
       <h1>HORMUZ WATCH</h1>
       <span class="live-badge">LIVE</span>
     </div>
     <div class="subtitle">AI-POWERED STRAIT STATUS MONITOR &nbsp;//&nbsp; TRUTH SOCIAL SIGNAL ANALYSIS</div>
+    <div class="disclaimer">We fed Trump's posts to an AI so you don't have to. Updated every 20 minutes. Not liable for oil prices.</div>
   </header>
 
+  <!-- HERO -->
   <div class="hero uncertain" id="hero">
-    <div class="eyebrow">IS THE STRAIT OF HORMUZ</div>
-    <div class="big uncertain" id="bigStatus">LOADING</div>
+    <div class="hero-top">
+      <div class="eyebrow">IS THE STRAIT OF HORMUZ</div>
+      <div class="big-status uncertain" id="bigStatus">LOADING</div>
+      <div class="snark" id="snark">Consulting the oracle...</div>
+      <div class="conf-row">
+        <span class="conf-lbl">AI CONFIDENCE</span>
+        <div class="conf-track"><div class="conf-fill" id="confFill" style="width:0"></div></div>
+        <span class="conf-num" id="confNum">—</span>
+      </div>
+    </div>
     <div class="hero-meta">
-      <div class="mc">LAST SIGNAL &nbsp;<span id="lastSignal">—</span></div>
-      <div class="mc">UPDATED &nbsp;<span id="lastUpdated">—</span></div>
-      <div class="mc">CONFIRMED SIGNALS &nbsp;<span id="sigCount">—</span></div>
+      <div class="mc">LAST POST &nbsp;<strong id="lastSignal">—</strong></div>
+      <div class="mc">REFRESHED &nbsp;<strong id="lastUpdated">—</strong></div>
+      <div class="mc">DAYS SINCE STATUS CHANGE &nbsp;<strong id="daysSince">—</strong></div>
+      <div class="mc">CONFIRMED SIGNALS &nbsp;<strong id="sigCount">—</strong></div>
     </div>
-    <div class="conf-row">
-      <span class="cl">CONFIDENCE</span>
-      <div class="ct"><div class="cf" id="cf" style="width:0"></div></div>
-      <span class="cn" id="cn">—</span>
-    </div>
-    <div class="rsn" id="rsn">Connecting to feed...</div>
-    <a href="#" id="srcLink" class="src" target="_blank" rel="noopener" style="display:none">VIEW SOURCE POST ON TRUTH SOCIAL ↗</a>
-  </div>
-
-  <div class="stats-bar">
-    <div class="stat">
-      <div class="stat-num cn-c" id="sClosed">—</div>
-      <div class="stat-lbl">CLOSED SIGNALS</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num on-c" id="sOpen">—</div>
-      <div class="stat-lbl">OPEN SIGNALS</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num tn-c" id="sTotal">—</div>
-      <div class="stat-lbl">TOTAL RELEVANT</div>
+    <div class="ts-card" id="tsCard" style="display:none">
+      <div class="ts-card-header">
+        <div class="ts-avatar">DJT</div>
+        <div>
+          <div class="ts-name">Donald J. Trump</div>
+          <div class="ts-handle">@realDonaldTrump</div>
+        </div>
+        <div class="ts-logo">TRUTH SOCIAL</div>
+      </div>
+      <div class="ts-body" id="tsBody">—</div>
+      <div class="ts-footer">
+        <span class="ts-date" id="tsDate">—</span>
+        <a href="#" id="tsLink" class="ts-link" target="_blank" rel="noopener">VIEW ORIGINAL ↗</a>
+      </div>
     </div>
   </div>
 
-  <div class="chart-wrap">
+  <!-- METRICS ROW -->
+  <div class="metrics">
+    <div class="stats-grid">
+      <div class="stat">
+        <div class="stat-num c" id="sClosed">—</div>
+        <div class="stat-lbl">CLOSED</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num o" id="sOpen">—</div>
+        <div class="stat-lbl">OPEN</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num t" id="sTotal">—</div>
+        <div class="stat-lbl">RELEVANT</div>
+      </div>
+    </div>
+
+    <!-- Y THO CARD -->
+    <div class="ytho-card">
+      <div class="ytho-title">WORLD REACTION</div>
+      <div class="ytho-body">
+        <img class="ytho-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdmlpZjhncWNpbG8yODBzcXVwa2ZydHA4ZDh2MHZxZ2N1Mmp5eWJmOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/0Vv0Ne2CnOClIExIuL/giphy.gif" alt="y tho"/>
+        <div>
+          <div class="ytho-text" id="ythoHeadline">Y THO?</div>
+          <div class="ytho-sub" id="ythoSub">Loading world reaction...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHART -->
+  <div class="chart-card">
     <div class="chart-title">STATUS HISTORY — LAST 60 DAYS</div>
     <div class="chart" id="chart"></div>
-    <div class="chart-axis">
-      <span class="axis-lbl" id="axisOld">—</span>
-      <span class="axis-lbl">TODAY</span>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--closed)"></div>CLOSED</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--open)"></div>OPEN</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2a2a2a"></div>NO SIGNAL</div>
     </div>
   </div>
 
-  <hr/>
-
-  <div class="tl-hdr">
-    <span class="tl-title">CONFIRMED OPEN / CLOSED SIGNALS</span>
-    <span class="tl-note" id="tlNote">UNCERTAIN POSTS EXCLUDED</span>
+  <!-- TIMELINE -->
+  <div class="tl-header">
+    <div class="tl-title">CONFIRMED OPEN / CLOSED SIGNALS</div>
+    <div class="tl-sub" id="tlSub">Only posts where the AI is confident. Uncertain vibes excluded.</div>
   </div>
-  <div class="tl" id="tl"><div class="state-msg">Loading signals...</div></div>
+  <div class="tl" id="tl"><div class="state-msg">Loading the geopolitical drama...</div></div>
 
   <div class="footer">
-    HORMUZ WATCH &nbsp;·&nbsp; Refreshes every 60s &nbsp;·&nbsp; Powered by Claude AI<br>
-    Not financial or geopolitical advice. For entertainment &amp; research purposes only.
+    HORMUZ WATCH &nbsp;·&nbsp; Powered by Claude AI &nbsp;·&nbsp; Data from Truth Social<br>
+    Not financial, geopolitical, or maritime advice. For entertainment &amp; research purposes only.<br>
+    If the strait actually closes, you have bigger problems than this website.
   </div>
 
 </div>
 <script>
 const API = "https://trump-strait-monitor-ktku-production.up.railway.app/latest";
 
-function sc(s){ const u=(s||'').toUpperCase(); return u==='OPEN'?'open':u==='CLOSED'?'closed':'uncertain'; }
-function cc(s){ return s==='open'?'var(--open)':s==='closed'?'var(--closed)':'var(--uncertain)'; }
-function gc(s){ return s==='open'?'#2ecc7112':s==='closed'?'#e74c3c18':'#f39c1212'; }
+const SNARK = {
+  open: [
+    "The oil flows. The markets breathe. For now.",
+    "Strait open. Check back in 20 minutes.",
+    "Tankers are moving. Trump is pleased. Probably.",
+    "All clear. Ships passing. World not ending today.",
+    "Open for business! Until the next post.",
+  ],
+  closed: [
+    "It's closed. $500 million a day. He mentioned that.",
+    "Ships not moving. Trump posting. Classic combo.",
+    "THE BLOCKADE IS IN FULL EFFECT. (His words, not ours.)",
+    "Closed. Iran is losing $500M/day. He will tell you again.",
+    "No ships. No deal. Lots of CAPS LOCK.",
+  ],
+  uncertain: [
+    "The AI is confused. Trump might be too.",
+    "Signals mixed. Reading between the CAPS.",
+    "Could be open. Could be closed. Could be a Tuesday.",
+    "Vibes unclear. More posts incoming.",
+    "AI shrugging. Strait status: ¯\\_(ツ)_/¯",
+  ]
+};
 
+const YTHO = {
+  open: [
+    { h: "Y THO?", s: "It was closed like 5 minutes ago. y tho is it open?" },
+    { h: "Y THO?", s: "Ships are moving. The world is confused. y tho?" },
+    { h: "WAIT WHAT?", s: "Iran agreed to open it. We think. y tho?" },
+    { h: "Y THO?", s: "Open. For now. The gif remains unconvinced." },
+  ],
+  closed: [
+    { h: "Y THO?", s: "Iran is losing $500M/day. y tho are they still doing this?" },
+    { h: "SIR—", s: "The strait is blockaded. The toddler has questions." },
+    { h: "Y THO?", s: "He said BLOCKADED in all caps. Multiple times. y tho?" },
+    { h: "NO SIR—", s: "Closed again. The gif speaks for the global shipping industry." },
+    { h: "Y THO?", s: "The strait is closed. Oil prices say y tho." },
+  ],
+  uncertain: [
+    { h: "Y THO?", s: "Even the AI doesn't know. Neither does this child." },
+    { h: "...Y THO?", s: "Mixed signals. The toddler is also confused." },
+    { h: "Y THO?", s: "The strait's status is: unclear. Like this child's expression." },
+  ]
+};
+
+function sc(s){ const u=(s||'').toUpperCase(); return u==='OPEN'?'open':u==='CLOSED'?'closed':'uncertain'; }
+function cc(s){ return s==='open'?'var(--open)':s==='closed'?'var(--closed)':'var(--unc)'; }
+function gc(s){ return s==='open'?'#2ecc7114':s==='closed'?'#e74c3c1a':'#f39c1210'; }
 function postUrl(pid){
-  const m = pid.match(/statuses\/(\d+)/);
+  const m=pid.match(/statuses\/(\d+)/);
   if(m) return `https://truthsocial.com/@realDonaldTrump/posts/${m[1]}`;
   if(/^\d+$/.test(pid)) return `https://x.com/realDonaldTrump/status/${pid}`;
   return null;
 }
 function trunc(t,n){ return t&&t.length>n?t.slice(0,n)+'…':t||''; }
-function fmtDate(iso){ return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function fmtDate(iso){ return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function timeAgo(iso){
   const d=Math.floor((Date.now()-new Date(iso))/1000);
   if(d<60) return d+'s ago';
@@ -210,14 +313,27 @@ function timeAgo(iso){
   if(d<86400) return Math.floor(d/3600)+'h ago';
   return Math.floor(d/86400)+'d ago';
 }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function daysSince(data){
+  const confirmed=data.filter(d=>{const u=(d.status||'').toUpperCase();return u==='OPEN'||u==='CLOSED';})
+    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  if(confirmed.length<2) return '—';
+  const current=confirmed[0].status.toUpperCase();
+  let changed;
+  for(let i=1;i<confirmed.length;i++){
+    if(confirmed[i].status.toUpperCase()!==current){changed=confirmed[i];break;}
+  }
+  if(!changed) return '—';
+  const d=Math.floor((Date.now()-new Date(changed.created_at))/86400000);
+  return d===0?'<1':String(d);
+}
 
 function buildChart(data){
-  const el  = document.getElementById('chart');
-  const now = Date.now();
-  const days = 60;
-  const buckets = Array.from({length:days},(_,i)=>({
-    date: new Date(now-(days-1-i)*86400000),
-    closed:0, open:0, any:0
+  const el=document.getElementById('chart');
+  const now=Date.now(), days=60;
+  const buckets=Array.from({length:days},(_,i)=>({
+    date:new Date(now-(days-1-i)*86400000),closed:0,open:0,any:0
   }));
   data.forEach(d=>{
     const age=Math.floor((now-new Date(d.created_at))/86400000);
@@ -231,14 +347,12 @@ function buildChart(data){
   });
   const max=Math.max(1,...buckets.map(b=>b.any));
   el.innerHTML=buckets.map(b=>{
-    const h=Math.max(2,Math.round((b.any/max)*60));
-    const bg=b.closed>0?'var(--closed)':b.open>0?'var(--open)':'#1e1e1e';
+    const h=Math.max(2,Math.round((b.any/max)*76));
+    const bg=b.closed>0?'var(--closed)':b.open>0?'var(--open)':'var(--b1)';
     const lbl=b.date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    const tip=b.any===0?`${lbl}: no signals`:`${lbl}: ${[b.closed&&b.closed+' closed',b.open&&b.open+' open'].filter(Boolean).join(', ')}`;
+    const tip=b.any===0?`${lbl}: quiet`:`${lbl}: ${[b.closed&&b.closed+' closed',b.open&&b.open+' open'].filter(Boolean).join(', ')}`;
     return `<div class="bar" style="height:${h}px;background:${bg}" data-tip="${tip}"></div>`;
   }).join('');
-  document.getElementById('axisOld').textContent=
-    buckets[0].date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
 async function load(){
@@ -254,16 +368,28 @@ async function load(){
       const hero=document.getElementById('hero');
       hero.className='hero '+s;
       const bs=document.getElementById('bigStatus');
-      bs.className='big '+s; bs.textContent=e.status;
-      const cf=document.getElementById('cf');
+      bs.className='big-status '+s; bs.textContent=e.status;
+      document.getElementById('snark').textContent=pick(SNARK[s]||SNARK.uncertain);
+
+      // y tho card
+      const ytho=pick(YTHO[s]||YTHO.uncertain);
+      document.getElementById('ythoHeadline').textContent=ytho.h;
+      document.getElementById('ythoSub').textContent=ytho.s;
+
+      const cf=document.getElementById('confFill');
       cf.style.width=e.confidence+'%'; cf.style.background=cc(s);
-      document.getElementById('cn').textContent=e.confidence+'%';
-      document.getElementById('rsn').textContent=e.reasoning||'—';
+      document.getElementById('confNum').textContent=e.confidence+'%';
       document.getElementById('lastSignal').textContent=timeAgo(e.created_at);
       document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('daysSince').textContent=daysSince(data);
+
+      const tsCard=document.getElementById('tsCard');
+      tsCard.style.display='block';
+      document.getElementById('tsBody').textContent=trunc(e.post_text,400);
+      document.getElementById('tsDate').textContent=fmtDate(e.created_at);
       const url=postUrl(e.post_id);
-      const lnk=document.getElementById('srcLink');
-      if(url){lnk.href=url;lnk.style.display='inline-block';}
+      const lnk=document.getElementById('tsLink');
+      if(url){lnk.href=url;}else{lnk.style.display='none';}
     }
 
     const confirmed=rel.filter(d=>{const u=(d.status||'').toUpperCase();return u==='OPEN'||u==='CLOSED';});
@@ -274,42 +400,38 @@ async function load(){
 
     buildChart(rel);
 
-    const filtered=confirmed
-      .filter(d=>d.confidence>=60)
+    const filtered=confirmed.filter(d=>d.confidence>=60)
       .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
 
-    document.getElementById('tlNote').textContent=filtered.length+' CONFIRMED SIGNALS';
-    const tl=document.getElementById('tl');
+    document.getElementById('tlSub').textContent=
+      `${filtered.length} confirmed signals. Only posts where the AI is confident. Uncertain vibes excluded.`;
 
+    const tl=document.getElementById('tl');
     if(!filtered.length){
-      tl.innerHTML='<div class="state-msg">No confirmed signals yet.</div>';
+      tl.innerHTML='<div class="state-msg">No confirmed signals yet.<br>Check back soon.</div>';
       return;
     }
 
-    tl.innerHTML=filtered.map((e,i)=>{
+    tl.innerHTML=filtered.map((e)=>{
       const s=sc(e.status);
       const url=postUrl(e.post_id);
-      const isLast=i===filtered.length-1;
-      return `<div class="ti">
-        <div class="tl-left">
-          <div class="dot ${s}"></div>
-          ${!isLast?'<div class="connector"></div>':''}
+      return `<div class="tl-card ${s}">
+        <div class="tl-card-top">
+          <span class="tl-tag ${s}">${e.status}</span>
+          <span class="tl-conf">${e.confidence}% confidence</span>
+          <span class="tl-date">${fmtDate(e.created_at)}</span>
         </div>
-        <div>
-          <div class="tmeta">
-            <span class="tag ${s}">${e.status}</span>
-            <span class="tconf">${e.confidence}% confidence</span>
-            <span class="ttime">${fmtDate(e.created_at)}</span>
-          </div>
-          <div class="ttext">"${trunc(e.post_text,220)}"</div>
-          <div class="treason">${e.reasoning||''}</div>
-          ${url?`<a href="${url}" class="tlink" target="_blank" rel="noopener">VIEW POST ↗</a>`:''}
+        <div class="tl-post">"${trunc(e.post_text,300)}"</div>
+        <div class="tl-card-foot">
+          <div class="tl-reasoning">${e.reasoning||''}</div>
+          ${url?`<a href="${url}" class="tl-link" target="_blank" rel="noopener">SOURCE ↗</a>`:''}
         </div>
       </div>`;
     }).join('');
 
   }catch(err){
-    document.getElementById('rsn').textContent='Error: '+err.message;
+    document.getElementById('bigStatus').textContent='ERROR';
+    document.getElementById('snark').textContent='Could not reach the oracle. Check Railway logs.';
   }
 }
 
