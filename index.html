@@ -14,20 +14,19 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --open:    #2ecc71;
-      --closed:  #e74c3c;
-      --unc:     #f39c12;
-      --bg:      #080808;
-      --s1:      #111;
-      --s2:      #0d0d0d;
-      --s3:      #161616;
-      --b1:      #1e1e1e;
-      --b2:      #2a2a2a;
-      --b3:      #333;
-      --text:    #ddd8cc;
-      --text2:   #aaa49a;
-      --text3:   #666;
-      --text4:   #3a3a3a;
+      --open:   #2ecc71;
+      --closed: #e74c3c;
+      --unc:    #f39c12;
+      --bg:     #080808;
+      --s1:     #111;
+      --s2:     #0d0d0d;
+      --s3:     #161616;
+      --b1:     #1e1e1e;
+      --b2:     #2a2a2a;
+      --text:   #ddd8cc;
+      --text2:  #aaa49a;
+      --text3:  #666;
+      --text4:  #3a3a3a;
     }
     html { scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
@@ -42,7 +41,7 @@
     /* HEADER */
     .site-header { margin-bottom: 2rem; border-bottom: 1px solid var(--b1); padding-bottom: 1.5rem; }
     .masthead { display: flex; align-items: baseline; gap: 16px; margin-bottom: .4rem; }
-    h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 10vw, 96px); letter-spacing: 4px; color: var(--text); line-height: 1; }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px,10vw,96px); letter-spacing: 4px; color: var(--text); line-height: 1; }
     .live-badge { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; background: #c0392b; color: #fff; padding: 4px 10px; border-radius: 2px; animation: blink 2s step-end infinite; }
     @keyframes blink { 50% { opacity: .3; } }
     .subtitle { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text3); letter-spacing: .5px; }
@@ -72,11 +71,11 @@
     /* TRUTH SOCIAL CARD */
     .ts-card { margin: 0 2.5rem 1.5rem; border: 1px solid var(--b1); border-radius: 6px; background: var(--s2); overflow: hidden; }
     .ts-card-header { display: flex; align-items: center; gap: 12px; padding: .85rem 1rem; border-bottom: 1px solid var(--b1); }
-    .ts-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #c0392b, #8b1a1a); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #fff; flex-shrink: 0; }
+    .ts-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg,#c0392b,#8b1a1a); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: #fff; flex-shrink: 0; }
     .ts-name { font-size: 14px; font-weight: 500; color: var(--text); }
     .ts-handle { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
     .ts-logo { margin-left: auto; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; color: var(--text4); }
-    .ts-body { padding: 1rem 1rem .85rem; font-size: 14px; line-height: 1.7; color: var(--text2); }
+    .ts-body { padding: 1rem; font-size: 14px; line-height: 1.7; color: var(--text2); }
     .ts-footer { padding: .6rem 1rem; border-top: 1px solid var(--b1); display: flex; align-items: center; justify-content: space-between; }
     .ts-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); }
     .ts-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-decoration: none; border-bottom: 1px solid var(--b1); transition: color .2s; }
@@ -84,7 +83,6 @@
 
     /* METRICS ROW */
     .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-
     .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--b1); border: 1px solid var(--b1); border-radius: 6px; overflow: hidden; }
     .stat { background: var(--s1); padding: 1rem 1.25rem; }
     .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 1px; }
@@ -101,37 +99,75 @@
     .ytho-text { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--text); line-height: 1.1; }
     .ytho-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); margin-top: .35rem; font-style: italic; line-height: 1.5; }
 
-    /* CHART */
-    .chart-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 6px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .chart-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--text3); margin-bottom: 1.25rem; }
-    .chart { display: flex; align-items: flex-end; gap: 4px; height: 80px; }
-    .bar { flex: 1; border-radius: 2px 2px 0 0; min-width: 3px; cursor: default; position: relative; transition: opacity .2s; }
-    .bar:hover { opacity: .75; }
-    .bar:hover::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--s3); border: 1px solid var(--b2); color: var(--text2); font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 8px; border-radius: 3px; white-space: nowrap; z-index: 10; pointer-events: none; }
-    .chart-legend { display: flex; gap: 1.5rem; margin-top: .75rem; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); }
-    .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    /* STATUS RIVER — the visual timeline */
+    .river-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 6px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .river-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--text3); margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: baseline; }
+    .river-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text4); }
 
-    /* TIMELINE */
+    /* the segmented bar */
+    .river { display: flex; height: 48px; border-radius: 4px; overflow: hidden; gap: 2px; margin-bottom: .75rem; }
+    .river-seg { display: flex; align-items: center; justify-content: center; position: relative; transition: opacity .2s; cursor: default; min-width: 4px; }
+    .river-seg:hover { opacity: .8; }
+    .river-seg.open   { background: var(--open); }
+    .river-seg.closed { background: var(--closed); }
+    .river-seg.uncertain { background: #2a2a2a; }
+    .river-seg:hover::after {
+      content: attr(data-tip);
+      position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+      background: var(--s3); border: 1px solid var(--b2); color: var(--text2);
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 8px;
+      border-radius: 3px; white-space: nowrap; z-index: 10; pointer-events: none;
+    }
+    .river-seg-lbl { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; color: rgba(0,0,0,.5); pointer-events: none; white-space: nowrap; overflow: hidden; padding: 0 6px; }
+
+    /* axis below river */
+    .river-axis { display: flex; justify-content: space-between; }
+    .river-axis-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text4); }
+
+    /* legend */
+    .river-legend { display: flex; gap: 1.5rem; margin-top: .85rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+    /* STATUS CHANGE TIMELINE */
     .tl-header { margin-bottom: 1.25rem; }
     .tl-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2.5px; color: var(--text3); }
     .tl-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); margin-top: .3rem; }
-    .tl { display: flex; flex-direction: column; gap: 1rem; }
-    .tl-card { border: 1px solid var(--b1); border-radius: 6px; background: var(--s1); overflow: hidden; transition: border-color .3s; }
-    .tl-card:hover { border-color: var(--b2); }
-    .tl-card.open   { border-left: 3px solid var(--open); }
-    .tl-card.closed { border-left: 3px solid var(--closed); }
-    .tl-card-top { display: flex; align-items: center; gap: 12px; padding: 1rem 1.25rem .75rem; flex-wrap: wrap; }
-    .tl-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; padding: 3px 10px; border-radius: 3px; font-weight: 500; }
+
+    .tl { display: flex; flex-direction: column; gap: 0; }
+
+    /* each status change block */
+    .tl-change { display: grid; grid-template-columns: auto 1fr; gap: 0 20px; }
+
+    /* left column: status bar + connector */
+    .tl-spine { display: flex; flex-direction: column; align-items: center; width: 44px; }
+    .tl-status-bar { width: 44px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tl-status-bar.open   { background: var(--open); }
+    .tl-status-bar.closed { background: var(--closed); }
+    .tl-status-bar-txt { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 1px; color: rgba(0,0,0,.55); writing-mode: vertical-lr; transform: rotate(180deg); padding: 8px 0; }
+    .tl-vline { flex: 1; width: 2px; background: var(--b1); margin: 2px 0; }
+
+    /* arrow between blocks */
+    .tl-arrow { display: grid; grid-template-columns: auto 1fr; gap: 0 20px; padding: 6px 0; align-items: center; }
+    .tl-arrow-spine { width: 44px; display: flex; align-items: center; justify-content: center; }
+    .tl-arrow-icon { font-family: 'IBM Plex Mono', monospace; font-size: 18px; color: var(--b2); }
+    .tl-arrow-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); font-style: italic; align-self: center; }
+
+    /* right column: content */
+    .tl-content { padding: 1.25rem 0 1.25rem; }
+    .tl-change-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: .6rem; }
+    .tl-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; padding: 3px 10px; border-radius: 3px; }
     .tl-tag.open   { color: var(--open);   background: #061408; border: 1px solid #1a4a2e; }
     .tl-tag.closed { color: var(--closed); background: #140606; border: 1px solid #4a1a1a; }
-    .tl-conf { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
-    .tl-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); margin-left: auto; }
-    .tl-post { padding: 0 1.25rem .85rem; font-size: 14px; line-height: 1.75; color: var(--text); font-style: italic; border-bottom: 1px solid var(--b1); }
-    .tl-card-foot { display: flex; align-items: center; justify-content: space-between; padding: .65rem 1.25rem; }
+    .tl-change-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); }
+    .tl-change-conf { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+    .tl-post-card { background: var(--s2); border: 1px solid var(--b1); border-radius: 5px; padding: .85rem 1rem; margin-bottom: .6rem; }
+    .tl-post-text { font-size: 14px; line-height: 1.75; color: var(--text); font-style: italic; }
+    .tl-foot { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
     .tl-reasoning { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); line-height: 1.5; flex: 1; }
-    .tl-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-decoration: none; border-bottom: 1px solid var(--b1); white-space: nowrap; margin-left: 1rem; transition: color .2s; }
+    .tl-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-decoration: none; border-bottom: 1px solid var(--b1); white-space: nowrap; flex-shrink: 0; transition: color .2s; }
     .tl-link:hover { color: var(--text2); }
+
     .state-msg { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text4); text-align: center; padding: 3rem 0; line-height: 2; }
 
     .footer { margin-top: 4rem; border-top: 1px solid var(--b1); padding-top: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-align: center; line-height: 2; }
@@ -142,6 +178,9 @@
       .hero-meta { padding: .85rem 1.25rem; gap: 1rem; }
       .ts-card { margin: 0 1.25rem 1.25rem; }
       .metrics { grid-template-columns: 1fr; }
+      .tl-spine { width: 32px; }
+      .tl-status-bar { width: 32px; }
+      .tl-arrow-spine { width: 32px; }
     }
   </style>
 </head>
@@ -172,7 +211,7 @@
     <div class="hero-meta">
       <div class="mc">LAST POST &nbsp;<strong id="lastSignal">—</strong></div>
       <div class="mc">REFRESHED &nbsp;<strong id="lastUpdated">—</strong></div>
-      <div class="mc">DAYS SINCE STATUS CHANGE &nbsp;<strong id="daysSince">—</strong></div>
+      <div class="mc">STATUS CHANGES &nbsp;<strong id="changeCount">—</strong></div>
       <div class="mc">CONFIRMED SIGNALS &nbsp;<strong id="sigCount">—</strong></div>
     </div>
     <div class="ts-card" id="tsCard" style="display:none">
@@ -192,24 +231,22 @@
     </div>
   </div>
 
-  <!-- METRICS ROW -->
+  <!-- METRICS -->
   <div class="metrics">
     <div class="stats-grid">
       <div class="stat">
         <div class="stat-num c" id="sClosed">—</div>
-        <div class="stat-lbl">CLOSED</div>
+        <div class="stat-lbl">CLOSED SIGNALS</div>
       </div>
       <div class="stat">
         <div class="stat-num o" id="sOpen">—</div>
-        <div class="stat-lbl">OPEN</div>
+        <div class="stat-lbl">OPEN SIGNALS</div>
       </div>
       <div class="stat">
         <div class="stat-num t" id="sTotal">—</div>
-        <div class="stat-lbl">RELEVANT</div>
+        <div class="stat-lbl">TOTAL RELEVANT</div>
       </div>
     </div>
-
-    <!-- Y THO CARD -->
     <div class="ytho-card">
       <div class="ytho-title">WORLD REACTION</div>
       <div class="ytho-body">
@@ -222,21 +259,28 @@
     </div>
   </div>
 
-  <!-- CHART -->
-  <div class="chart-card">
-    <div class="chart-title">STATUS HISTORY — LAST 60 DAYS</div>
-    <div class="chart" id="chart"></div>
-    <div class="chart-legend">
+  <!-- STATUS RIVER -->
+  <div class="river-card">
+    <div class="river-title">
+      STATUS RIVER — 60 DAYS
+      <span class="river-sub">each segment = one day · hover for details</span>
+    </div>
+    <div class="river" id="river"></div>
+    <div class="river-axis">
+      <span class="river-axis-lbl" id="riverStart">—</span>
+      <span class="river-axis-lbl">TODAY</span>
+    </div>
+    <div class="river-legend">
       <div class="legend-item"><div class="legend-dot" style="background:var(--closed)"></div>CLOSED</div>
       <div class="legend-item"><div class="legend-dot" style="background:var(--open)"></div>OPEN</div>
       <div class="legend-item"><div class="legend-dot" style="background:#2a2a2a"></div>NO SIGNAL</div>
     </div>
   </div>
 
-  <!-- TIMELINE -->
+  <!-- STATUS CHANGE TIMELINE -->
   <div class="tl-header">
-    <div class="tl-title">CONFIRMED OPEN / CLOSED SIGNALS</div>
-    <div class="tl-sub" id="tlSub">Only posts where the AI is confident. Uncertain vibes excluded.</div>
+    <div class="tl-title">STATUS CHANGE LOG</div>
+    <div class="tl-sub" id="tlSub">Each entry marks a flip between OPEN and CLOSED. Repeated posts of the same status are collapsed.</div>
   </div>
   <div class="tl" id="tl"><div class="state-msg">Loading the geopolitical drama...</div></div>
 
@@ -276,22 +320,19 @@ const SNARK = {
 
 const YTHO = {
   open: [
-    { h: "Y THO?", s: "It was closed like 5 minutes ago. y tho is it open?" },
-    { h: "Y THO?", s: "Ships are moving. The world is confused. y tho?" },
-    { h: "WAIT WHAT?", s: "Iran agreed to open it. We think. y tho?" },
-    { h: "Y THO?", s: "Open. For now. The gif remains unconvinced." },
+    { h:"Y THO?",    s:"It was closed like 5 minutes ago. y tho is it open?" },
+    { h:"WAIT WHAT?",s:"Iran agreed to open it. We think. y tho?" },
+    { h:"Y THO?",    s:"Open. For now. The gif remains unconvinced." },
   ],
   closed: [
-    { h: "Y THO?", s: "Iran is losing $500M/day. y tho are they still doing this?" },
-    { h: "SIR—", s: "The strait is blockaded. The toddler has questions." },
-    { h: "Y THO?", s: "He said BLOCKADED in all caps. Multiple times. y tho?" },
-    { h: "NO SIR—", s: "Closed again. The gif speaks for the global shipping industry." },
-    { h: "Y THO?", s: "The strait is closed. Oil prices say y tho." },
+    { h:"Y THO?",  s:"Iran is losing $500M/day. y tho are they still doing this?" },
+    { h:"SIR—",    s:"The strait is blockaded. The toddler has questions." },
+    { h:"NO SIR—", s:"Closed again. The gif speaks for global shipping." },
+    { h:"Y THO?",  s:"He said BLOCKADED in all caps. Multiple times. y tho?" },
   ],
   uncertain: [
-    { h: "Y THO?", s: "Even the AI doesn't know. Neither does this child." },
-    { h: "...Y THO?", s: "Mixed signals. The toddler is also confused." },
-    { h: "Y THO?", s: "The strait's status is: unclear. Like this child's expression." },
+    { h:"Y THO?",   s:"Even the AI doesn't know. Neither does this child." },
+    { h:"...Y THO?",s:"Mixed signals. The toddler is also confused." },
   ]
 };
 
@@ -305,7 +346,8 @@ function postUrl(pid){
   return null;
 }
 function trunc(t,n){ return t&&t.length>n?t.slice(0,n)+'…':t||''; }
-function fmtDate(iso){ return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(iso){ return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+function fmtDateTime(iso){ return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function timeAgo(iso){
   const d=Math.floor((Date.now()-new Date(iso))/1000);
   if(d<60) return d+'s ago';
@@ -315,44 +357,79 @@ function timeAgo(iso){
 }
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
-function daysSince(data){
-  const confirmed=data.filter(d=>{const u=(d.status||'').toUpperCase();return u==='OPEN'||u==='CLOSED';})
-    .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if(confirmed.length<2) return '—';
-  const current=confirmed[0].status.toUpperCase();
-  let changed;
-  for(let i=1;i<confirmed.length;i++){
-    if(confirmed[i].status.toUpperCase()!==current){changed=confirmed[i];break;}
+// Collapse consecutive same-status posts into status changes only
+function toStatusChanges(data){
+  // sort oldest first
+  const sorted = [...data]
+    .filter(d=>{ const u=(d.status||'').toUpperCase(); return u==='OPEN'||u==='CLOSED'; })
+    .filter(d=>d.confidence>=60)
+    .sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+
+  const changes = [];
+  let lastStatus = null;
+  for(const d of sorted){
+    const s = d.status.toUpperCase();
+    if(s !== lastStatus){
+      changes.push(d);
+      lastStatus = s;
+    }
+    // if same status, skip — we only care about the first post that triggered the change
   }
-  if(!changed) return '—';
-  const d=Math.floor((Date.now()-new Date(changed.created_at))/86400000);
-  return d===0?'<1':String(d);
+  return changes.reverse(); // newest first for display
 }
 
-function buildChart(data){
-  const el=document.getElementById('chart');
-  const now=Date.now(), days=60;
-  const buckets=Array.from({length:days},(_,i)=>({
-    date:new Date(now-(days-1-i)*86400000),closed:0,open:0,any:0
-  }));
-  data.forEach(d=>{
-    const age=Math.floor((now-new Date(d.created_at))/86400000);
-    if(age>=0&&age<days){
-      const b=buckets[days-1-age];
-      const u=(d.status||'').toUpperCase();
-      if(u==='CLOSED') b.closed++;
-      else if(u==='OPEN') b.open++;
-      b.any++;
-    }
+function buildRiver(data){
+  const el = document.getElementById('river');
+  const now = Date.now(), days = 60;
+
+  // For each day, find the dominant status
+  const dayStatus = Array.from({length:days},(_,i)=>{
+    const dayStart = now - (days-1-i)*86400000;
+    const dayEnd   = dayStart + 86400000;
+    const posts = data.filter(d=>{
+      const t = new Date(d.created_at).getTime();
+      const u = (d.status||'').toUpperCase();
+      return t>=dayStart && t<dayEnd && (u==='OPEN'||u==='CLOSED');
+    });
+    if(!posts.length) return {status:'none', date: new Date(dayStart), label:'no signal'};
+    // majority wins
+    const closed = posts.filter(p=>p.status.toUpperCase()==='CLOSED').length;
+    const open   = posts.filter(p=>p.status.toUpperCase()==='OPEN').length;
+    return {
+      status: closed>=open ? 'closed' : 'open',
+      date: new Date(dayStart),
+      closed, open
+    };
   });
-  const max=Math.max(1,...buckets.map(b=>b.any));
-  el.innerHTML=buckets.map(b=>{
-    const h=Math.max(2,Math.round((b.any/max)*76));
-    const bg=b.closed>0?'var(--closed)':b.open>0?'var(--open)':'var(--b1)';
-    const lbl=b.date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-    const tip=b.any===0?`${lbl}: quiet`:`${lbl}: ${[b.closed&&b.closed+' closed',b.open&&b.open+' open'].filter(Boolean).join(', ')}`;
-    return `<div class="bar" style="height:${h}px;background:${bg}" data-tip="${tip}"></div>`;
+
+  // Group consecutive same-status days into segments for the river
+  // Width proportional to number of days
+  const segments = [];
+  let i = 0;
+  while(i<dayStatus.length){
+    const s = dayStatus[i].status;
+    let j = i;
+    while(j<dayStatus.length && dayStatus[j].status===s) j++;
+    segments.push({ status:s, days:j-i, startDate:dayStatus[i].date, endDate:dayStatus[j-1]?.date });
+    i = j;
+  }
+
+  el.innerHTML = segments.map(seg=>{
+    const cls = seg.status==='closed'?'closed':seg.status==='open'?'open':'uncertain';
+    const pct  = (seg.days/days*100).toFixed(1);
+    const lbl  = seg.status.toUpperCase();
+    const dateStr = seg.days===1
+      ? seg.startDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})
+      : `${seg.startDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${seg.endDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+    const tip = `${dateStr}: ${lbl} (${seg.days}d)`;
+    return `<div class="river-seg ${cls}" style="flex:${seg.days}" data-tip="${tip}">
+      ${seg.days>=4?`<span class="river-seg-lbl">${lbl}</span>`:''}
+    </div>`;
   }).join('');
+
+  const startDate = new Date(now-(days-1)*86400000);
+  document.getElementById('riverStart').textContent =
+    startDate.toLocaleDateString('en-US',{month:'short',day:'numeric'});
 }
 
 async function load(){
@@ -362,6 +439,7 @@ async function load(){
     const data=await res.json();
     const rel=data.filter(d=>d.status!=='IRRELEVANT');
 
+    // Hero
     if(rel.length){
       const e=rel[0], s=sc(e.status);
       document.body.style.setProperty('--glow',gc(s));
@@ -371,7 +449,6 @@ async function load(){
       bs.className='big-status '+s; bs.textContent=e.status;
       document.getElementById('snark').textContent=pick(SNARK[s]||SNARK.uncertain);
 
-      // y tho card
       const ytho=pick(YTHO[s]||YTHO.uncertain);
       document.getElementById('ythoHeadline').textContent=ytho.h;
       document.getElementById('ythoSub').textContent=ytho.s;
@@ -381,57 +458,92 @@ async function load(){
       document.getElementById('confNum').textContent=e.confidence+'%';
       document.getElementById('lastSignal').textContent=timeAgo(e.created_at);
       document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-      document.getElementById('daysSince').textContent=daysSince(data);
 
       const tsCard=document.getElementById('tsCard');
       tsCard.style.display='block';
       document.getElementById('tsBody').textContent=trunc(e.post_text,400);
-      document.getElementById('tsDate').textContent=fmtDate(e.created_at);
+      document.getElementById('tsDate').textContent=fmtDateTime(e.created_at);
       const url=postUrl(e.post_id);
       const lnk=document.getElementById('tsLink');
       if(url){lnk.href=url;}else{lnk.style.display='none';}
     }
 
+    // Stats
     const confirmed=rel.filter(d=>{const u=(d.status||'').toUpperCase();return u==='OPEN'||u==='CLOSED';});
     document.getElementById('sClosed').textContent=confirmed.filter(d=>d.status.toUpperCase()==='CLOSED').length;
     document.getElementById('sOpen').textContent=confirmed.filter(d=>d.status.toUpperCase()==='OPEN').length;
     document.getElementById('sTotal').textContent=rel.length;
     document.getElementById('sigCount').textContent=confirmed.length;
 
-    buildChart(rel);
+    // Status changes
+    const changes = toStatusChanges(rel);
+    document.getElementById('changeCount').textContent=changes.length;
 
-    const filtered=confirmed.filter(d=>d.confidence>=60)
-      .sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+    // River
+    buildRiver(rel);
 
+    // Timeline — status changes only
     document.getElementById('tlSub').textContent=
-      `${filtered.length} confirmed signals. Only posts where the AI is confident. Uncertain vibes excluded.`;
+      `${changes.length} status changes detected. Repeated posts of the same status are collapsed.`;
 
     const tl=document.getElementById('tl');
-    if(!filtered.length){
-      tl.innerHTML='<div class="state-msg">No confirmed signals yet.<br>Check back soon.</div>';
+    if(!changes.length){
+      tl.innerHTML='<div class="state-msg">No status changes detected yet.</div>';
       return;
     }
 
-    tl.innerHTML=filtered.map((e)=>{
-      const s=sc(e.status);
-      const url=postUrl(e.post_id);
-      return `<div class="tl-card ${s}">
-        <div class="tl-card-top">
-          <span class="tl-tag ${s}">${e.status}</span>
-          <span class="tl-conf">${e.confidence}% confidence</span>
-          <span class="tl-date">${fmtDate(e.created_at)}</span>
-        </div>
-        <div class="tl-post">"${trunc(e.post_text,300)}"</div>
-        <div class="tl-card-foot">
-          <div class="tl-reasoning">${e.reasoning||''}</div>
-          ${url?`<a href="${url}" class="tl-link" target="_blank" rel="noopener">SOURCE ↗</a>`:''}
-        </div>
-      </div>`;
+    tl.innerHTML = changes.map((e,i)=>{
+      const s   = sc(e.status);
+      const url = postUrl(e.post_id);
+      const isLast = i===changes.length-1;
+      const nextS  = i<changes.length-1 ? sc(changes[i+1].status) : null;
+
+      // duration label: how long this status lasted before the next change
+      let durationLabel = '';
+      if(i<changes.length-1){
+        const ms = new Date(e.created_at) - new Date(changes[i+1].created_at);
+        const d  = Math.floor(Math.abs(ms)/86400000);
+        const h  = Math.floor((Math.abs(ms)%86400000)/3600000);
+        durationLabel = d>0 ? `${d}d ${h}h` : `${h}h`;
+      }
+
+      const changeBlock = `
+        <div class="tl-change">
+          <div class="tl-spine">
+            <div class="tl-status-bar ${s}" style="height:100%">
+              <span class="tl-status-bar-txt">${e.status}</span>
+            </div>
+          </div>
+          <div class="tl-content">
+            <div class="tl-change-meta">
+              <span class="tl-tag ${s}">${e.status}</span>
+              <span class="tl-change-date">${fmtDate(e.created_at)}</span>
+              <span class="tl-change-conf">${e.confidence}% confidence</span>
+            </div>
+            <div class="tl-post-card">
+              <div class="tl-post-text">"${trunc(e.post_text,300)}"</div>
+            </div>
+            <div class="tl-foot">
+              <div class="tl-reasoning">${e.reasoning||''}</div>
+              ${url?`<a href="${url}" class="tl-link" target="_blank" rel="noopener">SOURCE ↗</a>`:''}
+            </div>
+          </div>
+        </div>`;
+
+      // connector arrow between changes
+      const arrow = !isLast ? `
+        <div class="tl-arrow">
+          <div class="tl-arrow-spine"><span class="tl-arrow-icon">↕</span></div>
+          <div class="tl-arrow-label">flipped to ${changes[i+1].status.toUpperCase()} after ${durationLabel}</div>
+        </div>` : '';
+
+      return changeBlock + arrow;
     }).join('');
 
   }catch(err){
     document.getElementById('bigStatus').textContent='ERROR';
     document.getElementById('snark').textContent='Could not reach the oracle. Check Railway logs.';
+    console.error(err);
   }
 }
 
