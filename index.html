@@ -81,7 +81,7 @@
     .ts-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-decoration: none; border-bottom: 1px solid var(--b1); transition: color .2s; }
     .ts-link:hover { color: var(--text2); }
 
-    /* METRICS ROW */
+    /* METRICS */
     .metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
     .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--b1); border: 1px solid var(--b1); border-radius: 6px; overflow: hidden; }
     .stat { background: var(--s1); padding: 1rem 1.25rem; }
@@ -90,8 +90,6 @@
     .stat-num.o { color: var(--open); }
     .stat-num.t { color: var(--text3); }
     .stat-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1.5px; color: var(--text3); margin-top: 3px; }
-
-    /* Y THO CARD */
     .ytho-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
     .ytho-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--text3); padding: 1rem 1.25rem .75rem; border-bottom: 1px solid var(--b1); }
     .ytho-body { display: flex; align-items: center; gap: 1rem; padding: .85rem 1.25rem; flex: 1; }
@@ -99,77 +97,111 @@
     .ytho-text { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--text); line-height: 1.1; }
     .ytho-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); margin-top: .35rem; font-style: italic; line-height: 1.5; }
 
-    /* STATUS RIVER — the visual timeline */
-    .river-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 6px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .river-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2px; color: var(--text3); margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: baseline; }
-    .river-sub { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text4); }
+    /* ── STATUS RIVER ── */
+    .river-card { background: var(--s1); border: 1px solid var(--b1); border-radius: 6px; padding: 1.75rem 1.75rem 1.25rem; margin-bottom: 1.75rem; }
+    .river-header { margin-bottom: 1.5rem; }
+    .river-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); }
+    .river-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); margin-top: .3rem; }
 
-    /* the segmented bar */
-    .river { display: flex; height: 48px; border-radius: 4px; overflow: hidden; gap: 2px; margin-bottom: .75rem; }
-    .river-seg { display: flex; align-items: center; justify-content: center; position: relative; transition: opacity .2s; cursor: default; min-width: 4px; }
-    .river-seg:hover { opacity: .8; }
-    .river-seg.open   { background: var(--open); }
-    .river-seg.closed { background: var(--closed); }
-    .river-seg.uncertain { background: #2a2a2a; }
-    .river-seg:hover::after {
-      content: attr(data-tip);
-      position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%);
-      background: var(--s3); border: 1px solid var(--b2); color: var(--text2);
-      font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 4px 8px;
-      border-radius: 3px; white-space: nowrap; z-index: 10; pointer-events: none;
+    /* the river itself */
+    .river-wrap { position: relative; }
+    .river { display: flex; height: 72px; border-radius: 6px; overflow: hidden; gap: 3px; }
+
+    .river-seg { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: filter .2s; cursor: default; }
+    .river-seg:hover { filter: brightness(1.2); }
+
+    .river-seg.open {
+      background: var(--open);
+      box-shadow: inset 0 0 30px rgba(255,255,255,.08);
     }
-    .river-seg-lbl { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; color: rgba(0,0,0,.5); pointer-events: none; white-space: nowrap; overflow: hidden; padding: 0 6px; }
+    .river-seg.closed {
+      background: var(--closed);
+      box-shadow: inset 0 0 30px rgba(0,0,0,.2);
+    }
 
-    /* axis below river */
-    .river-axis { display: flex; justify-content: space-between; }
+    /* glow pulse on open segments */
+    .river-seg.open::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .river-seg-lbl {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px; letter-spacing: 2px;
+      color: rgba(0,0,0,.45);
+      pointer-events: none; z-index: 1;
+      white-space: nowrap; overflow: hidden;
+      padding: 0 8px;
+    }
+
+    /* tooltip */
+    .river-seg:hover .river-tip {
+      opacity: 1; transform: translateY(0);
+    }
+    .river-tip {
+      position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%) translateY(4px);
+      background: #1a1a1a; border: 1px solid var(--b2); color: var(--text2);
+      font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 5px 10px;
+      border-radius: 4px; white-space: nowrap; z-index: 20; pointer-events: none;
+      opacity: 0; transition: opacity .15s, transform .15s;
+    }
+
+    /* change markers */
+    .river-markers { position: relative; height: 28px; margin-top: 4px; }
+    .river-marker { position: absolute; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .river-marker-line { width: 1px; height: 8px; background: var(--b2); }
+    .river-marker-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text4); white-space: nowrap; }
+
+    /* axis */
+    .river-axis { display: flex; justify-content: space-between; margin-top: .25rem; }
     .river-axis-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text4); }
 
     /* legend */
-    .river-legend { display: flex; gap: 1.5rem; margin-top: .85rem; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); }
-    .legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .river-legend { display: flex; gap: 2rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--b1); }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+    .legend-swatch { width: 24px; height: 10px; border-radius: 2px; }
 
-    /* STATUS CHANGE TIMELINE */
+    /* ── TIMELINE ── */
     .tl-header { margin-bottom: 1.25rem; }
-    .tl-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2.5px; color: var(--text3); }
+    .tl-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 2px; color: var(--text); }
     .tl-sub { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); margin-top: .3rem; }
-
     .tl { display: flex; flex-direction: column; gap: 0; }
 
-    /* each status change block */
-    .tl-change { display: grid; grid-template-columns: auto 1fr; gap: 0 20px; }
+    .tl-change { display: grid; grid-template-columns: 52px 1fr; gap: 0 16px; }
+    .tl-spine { display: flex; flex-direction: column; align-items: center; }
+    .tl-bar { width: 52px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tl-bar.open   { background: var(--open); }
+    .tl-bar.closed { background: var(--closed); }
+    .tl-bar-txt { font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 2px; color: rgba(0,0,0,.5); writing-mode: vertical-lr; transform: rotate(180deg); padding: 10px 0; }
+    .tl-vline { flex: 1; width: 2px; background: var(--b1); margin: 3px 0; min-height: 12px; }
 
-    /* left column: status bar + connector */
-    .tl-spine { display: flex; flex-direction: column; align-items: center; width: 44px; }
-    .tl-status-bar { width: 44px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .tl-status-bar.open   { background: var(--open); }
-    .tl-status-bar.closed { background: var(--closed); }
-    .tl-status-bar-txt { font-family: 'Bebas Neue', sans-serif; font-size: 11px; letter-spacing: 1px; color: rgba(0,0,0,.55); writing-mode: vertical-lr; transform: rotate(180deg); padding: 8px 0; }
-    .tl-vline { flex: 1; width: 2px; background: var(--b1); margin: 2px 0; }
-
-    /* arrow between blocks */
-    .tl-arrow { display: grid; grid-template-columns: auto 1fr; gap: 0 20px; padding: 6px 0; align-items: center; }
-    .tl-arrow-spine { width: 44px; display: flex; align-items: center; justify-content: center; }
-    .tl-arrow-icon { font-family: 'IBM Plex Mono', monospace; font-size: 18px; color: var(--b2); }
-    .tl-arrow-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); font-style: italic; align-self: center; }
-
-    /* right column: content */
-    .tl-content { padding: 1.25rem 0 1.25rem; }
-    .tl-change-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: .6rem; }
+    .tl-content { padding: 1.25rem 0 0; }
+    .tl-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: .65rem; }
     .tl-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1px; padding: 3px 10px; border-radius: 3px; }
     .tl-tag.open   { color: var(--open);   background: #061408; border: 1px solid #1a4a2e; }
     .tl-tag.closed { color: var(--closed); background: #140606; border: 1px solid #4a1a1a; }
-    .tl-change-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); }
-    .tl-change-conf { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
-    .tl-post-card { background: var(--s2); border: 1px solid var(--b1); border-radius: 5px; padding: .85rem 1rem; margin-bottom: .6rem; }
-    .tl-post-text { font-size: 14px; line-height: 1.75; color: var(--text); font-style: italic; }
-    .tl-foot { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .tl-date { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); }
+    .tl-conf { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
+
+    .tl-post { background: var(--s2); border: 1px solid var(--b1); border-radius: 5px; padding: .9rem 1rem; margin-bottom: .65rem; font-size: 14px; line-height: 1.75; color: var(--text); font-style: italic; }
+    .tl-foot { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
     .tl-reasoning { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); line-height: 1.5; flex: 1; }
     .tl-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-decoration: none; border-bottom: 1px solid var(--b1); white-space: nowrap; flex-shrink: 0; transition: color .2s; }
     .tl-link:hover { color: var(--text2); }
 
-    .state-msg { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text4); text-align: center; padding: 3rem 0; line-height: 2; }
+    /* flip arrow */
+    .tl-flip { display: grid; grid-template-columns: 52px 1fr; gap: 0 16px; align-items: center; padding: 4px 0; }
+    .tl-flip-spine { display: flex; justify-content: center; }
+    .tl-flip-icon { font-size: 20px; color: var(--b2); line-height: 1; }
+    .tl-flip-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); font-style: italic; }
 
+    .state-msg { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text4); text-align: center; padding: 3rem 0; line-height: 2; }
     .footer { margin-top: 4rem; border-top: 1px solid var(--b1); padding-top: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text4); text-align: center; line-height: 2; }
 
     @media (max-width: 600px) {
@@ -178,9 +210,9 @@
       .hero-meta { padding: .85rem 1.25rem; gap: 1rem; }
       .ts-card { margin: 0 1.25rem 1.25rem; }
       .metrics { grid-template-columns: 1fr; }
-      .tl-spine { width: 32px; }
-      .tl-status-bar { width: 32px; }
-      .tl-arrow-spine { width: 32px; }
+      .tl-change { grid-template-columns: 40px 1fr; }
+      .tl-bar { width: 40px; }
+      .tl-flip { grid-template-columns: 40px 1fr; }
     }
   </style>
 </head>
@@ -211,7 +243,7 @@
     <div class="hero-meta">
       <div class="mc">LAST POST &nbsp;<strong id="lastSignal">—</strong></div>
       <div class="mc">REFRESHED &nbsp;<strong id="lastUpdated">—</strong></div>
-      <div class="mc">STATUS CHANGES &nbsp;<strong id="changeCount">—</strong></div>
+      <div class="mc">STATUS FLIPS &nbsp;<strong id="changeCount">—</strong></div>
       <div class="mc">CONFIRMED SIGNALS &nbsp;<strong id="sigCount">—</strong></div>
     </div>
     <div class="ts-card" id="tsCard" style="display:none">
@@ -261,26 +293,28 @@
 
   <!-- STATUS RIVER -->
   <div class="river-card">
-    <div class="river-title">
-      STATUS RIVER — 60 DAYS
-      <span class="river-sub">each segment = one day · hover for details</span>
+    <div class="river-header">
+      <div class="river-title">THE STATUS RIVER</div>
+      <div class="river-sub">60-day history of status changes · each segment proportional to days in that status · hover for details</div>
     </div>
-    <div class="river" id="river"></div>
+    <div class="river-wrap">
+      <div class="river" id="river"></div>
+      <div class="river-markers" id="riverMarkers"></div>
+    </div>
     <div class="river-axis">
-      <span class="river-axis-lbl" id="riverStart">—</span>
+      <span class="river-axis-lbl" id="riverStart">60 days ago</span>
       <span class="river-axis-lbl">TODAY</span>
     </div>
     <div class="river-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:var(--closed)"></div>CLOSED</div>
-      <div class="legend-item"><div class="legend-dot" style="background:var(--open)"></div>OPEN</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#2a2a2a"></div>NO SIGNAL</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--open)"></div>OPEN — ships moving, deal made, strait clear</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:var(--closed)"></div>CLOSED — blockade, ultimatum, threat of closure</div>
     </div>
   </div>
 
   <!-- STATUS CHANGE TIMELINE -->
   <div class="tl-header">
     <div class="tl-title">STATUS CHANGE LOG</div>
-    <div class="tl-sub" id="tlSub">Each entry marks a flip between OPEN and CLOSED. Repeated posts of the same status are collapsed.</div>
+    <div class="tl-sub" id="tlSub">Each entry = a flip in status. Repeated posts of the same status collapsed.</div>
   </div>
   <div class="tl" id="tl"><div class="state-msg">Loading the geopolitical drama...</div></div>
 
@@ -306,14 +340,13 @@ const SNARK = {
     "It's closed. $500 million a day. He mentioned that.",
     "Ships not moving. Trump posting. Classic combo.",
     "THE BLOCKADE IS IN FULL EFFECT. (His words, not ours.)",
-    "Closed. Iran is losing $500M/day. He will tell you again.",
     "No ships. No deal. Lots of CAPS LOCK.",
+    "Closed. Iran is losing $500M/day. He will tell you again.",
   ],
   uncertain: [
     "The AI is confused. Trump might be too.",
     "Signals mixed. Reading between the CAPS.",
     "Could be open. Could be closed. Could be a Tuesday.",
-    "Vibes unclear. More posts incoming.",
     "AI shrugging. Strait status: ¯\\_(ツ)_/¯",
   ]
 };
@@ -356,80 +389,78 @@ function timeAgo(iso){
   return Math.floor(d/86400)+'d ago';
 }
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function durLabel(ms){
+  const d=Math.floor(Math.abs(ms)/86400000);
+  const h=Math.floor((Math.abs(ms)%86400000)/3600000);
+  return d>0?`${d}d ${h}h`:`${h}h`;
+}
 
-// Collapse consecutive same-status posts into status changes only
+// Collapse to status changes only (oldest first)
 function toStatusChanges(data){
-  // sort oldest first
-  const sorted = [...data]
+  const sorted=[...data]
     .filter(d=>{ const u=(d.status||'').toUpperCase(); return u==='OPEN'||u==='CLOSED'; })
     .filter(d=>d.confidence>=60)
     .sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
-
-  const changes = [];
-  let lastStatus = null;
+  const changes=[];
+  let last=null;
   for(const d of sorted){
-    const s = d.status.toUpperCase();
-    if(s !== lastStatus){
-      changes.push(d);
-      lastStatus = s;
-    }
-    // if same status, skip — we only care about the first post that triggered the change
+    if(d.status.toUpperCase()!==last){ changes.push(d); last=d.status.toUpperCase(); }
   }
-  return changes.reverse(); // newest first for display
+  return changes; // oldest first — we'll reverse for display
 }
 
-function buildRiver(data){
-  const el = document.getElementById('river');
-  const now = Date.now(), days = 60;
+function buildRiver(changes){
+  const riverEl   = document.getElementById('river');
+  const markersEl = document.getElementById('riverMarkers');
+  if(!changes.length){ riverEl.innerHTML=''; return; }
 
-  // For each day, find the dominant status
-  const dayStatus = Array.from({length:days},(_,i)=>{
-    const dayStart = now - (days-1-i)*86400000;
-    const dayEnd   = dayStart + 86400000;
-    const posts = data.filter(d=>{
-      const t = new Date(d.created_at).getTime();
-      const u = (d.status||'').toUpperCase();
-      return t>=dayStart && t<dayEnd && (u==='OPEN'||u==='CLOSED');
-    });
-    if(!posts.length) return {status:'none', date: new Date(dayStart), label:'no signal'};
-    // majority wins
-    const closed = posts.filter(p=>p.status.toUpperCase()==='CLOSED').length;
-    const open   = posts.filter(p=>p.status.toUpperCase()==='OPEN').length;
-    return {
-      status: closed>=open ? 'closed' : 'open',
-      date: new Date(dayStart),
-      closed, open
-    };
+  const now      = Date.now();
+  const spanStart= new Date(changes[0].created_at).getTime();
+  const totalMs  = now - spanStart;
+
+  // Build segments: from each change's date to the next (or now)
+  const segments = changes.map((c,i)=>{
+    const start = new Date(c.created_at).getTime();
+    const end   = i<changes.length-1 ? new Date(changes[i+1].created_at).getTime() : now;
+    const days  = Math.max(0.5, (end-start)/86400000);
+    const pct   = ((end-start)/totalMs*100);
+    const s     = sc(c.status);
+    const startStr = new Date(start).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const endStr   = new Date(end).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return { s, pct, days, start, end, startStr, endStr };
   });
 
-  // Group consecutive same-status days into segments for the river
-  // Width proportional to number of days
-  const segments = [];
-  let i = 0;
-  while(i<dayStatus.length){
-    const s = dayStatus[i].status;
-    let j = i;
-    while(j<dayStatus.length && dayStatus[j].status===s) j++;
-    segments.push({ status:s, days:j-i, startDate:dayStatus[i].date, endDate:dayStatus[j-1]?.date });
-    i = j;
-  }
-
-  el.innerHTML = segments.map(seg=>{
-    const cls = seg.status==='closed'?'closed':seg.status==='open'?'open':'uncertain';
-    const pct  = (seg.days/days*100).toFixed(1);
-    const lbl  = seg.status.toUpperCase();
-    const dateStr = seg.days===1
-      ? seg.startDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})
-      : `${seg.startDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${seg.endDate.toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
-    const tip = `${dateStr}: ${lbl} (${seg.days}d)`;
-    return `<div class="river-seg ${cls}" style="flex:${seg.days}" data-tip="${tip}">
-      ${seg.days>=4?`<span class="river-seg-lbl">${lbl}</span>`:''}
+  // River segments
+  riverEl.innerHTML = segments.map(seg=>{
+    const daysRound = seg.days.toFixed(1);
+    const tip = `${seg.startStr} → ${seg.endStr}: ${seg.s.toUpperCase()} (${daysRound} days)`;
+    const showLbl = seg.pct > 8;
+    return `<div class="river-seg ${seg.s}" style="flex:${seg.pct.toFixed(2)}" title="${tip}">
+      <div class="river-tip">${tip}</div>
+      ${showLbl?`<span class="river-seg-lbl">${seg.s.toUpperCase()}</span>`:''}
     </div>`;
   }).join('');
 
-  const startDate = new Date(now-(days-1)*86400000);
+  // Change markers — vertical ticks at each flip point (except the first)
+  let markerHtml = '';
+  let cumPct = 0;
+  segments.forEach((seg,i)=>{
+    if(i>0){
+      // marker at start of this segment
+      const pctPos = cumPct;
+      const dateStr = seg.startStr;
+      markerHtml += `<div class="river-marker" style="left:${pctPos.toFixed(1)}%">
+        <div class="river-marker-line"></div>
+        <div class="river-marker-lbl">${dateStr}</div>
+      </div>`;
+    }
+    cumPct += seg.pct;
+  });
+  markersEl.innerHTML = markerHtml;
+
+  // Axis start date
   document.getElementById('riverStart').textContent =
-    startDate.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    new Date(spanStart).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 }
 
 async function load(){
@@ -439,28 +470,22 @@ async function load(){
     const data=await res.json();
     const rel=data.filter(d=>d.status!=='IRRELEVANT');
 
-    // Hero
     if(rel.length){
       const e=rel[0], s=sc(e.status);
       document.body.style.setProperty('--glow',gc(s));
-      const hero=document.getElementById('hero');
-      hero.className='hero '+s;
+      document.getElementById('hero').className='hero '+s;
       const bs=document.getElementById('bigStatus');
       bs.className='big-status '+s; bs.textContent=e.status;
       document.getElementById('snark').textContent=pick(SNARK[s]||SNARK.uncertain);
-
       const ytho=pick(YTHO[s]||YTHO.uncertain);
       document.getElementById('ythoHeadline').textContent=ytho.h;
       document.getElementById('ythoSub').textContent=ytho.s;
-
       const cf=document.getElementById('confFill');
       cf.style.width=e.confidence+'%'; cf.style.background=cc(s);
       document.getElementById('confNum').textContent=e.confidence+'%';
       document.getElementById('lastSignal').textContent=timeAgo(e.created_at);
       document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-
-      const tsCard=document.getElementById('tsCard');
-      tsCard.style.display='block';
+      document.getElementById('tsCard').style.display='block';
       document.getElementById('tsBody').textContent=trunc(e.post_text,400);
       document.getElementById('tsDate').textContent=fmtDateTime(e.created_at);
       const url=postUrl(e.post_id);
@@ -468,76 +493,61 @@ async function load(){
       if(url){lnk.href=url;}else{lnk.style.display='none';}
     }
 
-    // Stats
     const confirmed=rel.filter(d=>{const u=(d.status||'').toUpperCase();return u==='OPEN'||u==='CLOSED';});
     document.getElementById('sClosed').textContent=confirmed.filter(d=>d.status.toUpperCase()==='CLOSED').length;
     document.getElementById('sOpen').textContent=confirmed.filter(d=>d.status.toUpperCase()==='OPEN').length;
     document.getElementById('sTotal').textContent=rel.length;
     document.getElementById('sigCount').textContent=confirmed.length;
 
-    // Status changes
-    const changes = toStatusChanges(rel);
+    const changes=toStatusChanges(rel);
     document.getElementById('changeCount').textContent=changes.length;
 
-    // River
-    buildRiver(rel);
+    buildRiver(changes);
 
-    // Timeline — status changes only
+    // Timeline — newest first
+    const displayChanges=[...changes].reverse();
     document.getElementById('tlSub').textContent=
-      `${changes.length} status changes detected. Repeated posts of the same status are collapsed.`;
+      `${changes.length} status flips detected. Repeated posts of the same status are collapsed.`;
 
     const tl=document.getElementById('tl');
-    if(!changes.length){
+    if(!displayChanges.length){
       tl.innerHTML='<div class="state-msg">No status changes detected yet.</div>';
       return;
     }
 
-    tl.innerHTML = changes.map((e,i)=>{
-      const s   = sc(e.status);
-      const url = postUrl(e.post_id);
-      const isLast = i===changes.length-1;
-      const nextS  = i<changes.length-1 ? sc(changes[i+1].status) : null;
+    tl.innerHTML=displayChanges.map((e,i)=>{
+      const s=sc(e.status);
+      const url=postUrl(e.post_id);
+      const isLast=i===displayChanges.length-1;
+      const nextE=displayChanges[i+1];
+      const duration=nextE ? durLabel(new Date(e.created_at)-new Date(nextE.created_at)) : null;
 
-      // duration label: how long this status lasted before the next change
-      let durationLabel = '';
-      if(i<changes.length-1){
-        const ms = new Date(e.created_at) - new Date(changes[i+1].created_at);
-        const d  = Math.floor(Math.abs(ms)/86400000);
-        const h  = Math.floor((Math.abs(ms)%86400000)/3600000);
-        durationLabel = d>0 ? `${d}d ${h}h` : `${h}h`;
-      }
-
-      const changeBlock = `
+      return `
         <div class="tl-change">
           <div class="tl-spine">
-            <div class="tl-status-bar ${s}" style="height:100%">
-              <span class="tl-status-bar-txt">${e.status}</span>
+            <div class="tl-bar ${s}" style="padding:12px 0">
+              <span class="tl-bar-txt">${e.status}</span>
             </div>
+            ${!isLast?'<div class="tl-vline"></div>':''}
           </div>
           <div class="tl-content">
-            <div class="tl-change-meta">
+            <div class="tl-meta">
               <span class="tl-tag ${s}">${e.status}</span>
-              <span class="tl-change-date">${fmtDate(e.created_at)}</span>
-              <span class="tl-change-conf">${e.confidence}% confidence</span>
+              <span class="tl-date">${fmtDate(e.created_at)}</span>
+              <span class="tl-conf">${e.confidence}% confidence</span>
             </div>
-            <div class="tl-post-card">
-              <div class="tl-post-text">"${trunc(e.post_text,300)}"</div>
-            </div>
+            <div class="tl-post">"${trunc(e.post_text,300)}"</div>
             <div class="tl-foot">
               <div class="tl-reasoning">${e.reasoning||''}</div>
               ${url?`<a href="${url}" class="tl-link" target="_blank" rel="noopener">SOURCE ↗</a>`:''}
             </div>
           </div>
-        </div>`;
-
-      // connector arrow between changes
-      const arrow = !isLast ? `
-        <div class="tl-arrow">
-          <div class="tl-arrow-spine"><span class="tl-arrow-icon">↕</span></div>
-          <div class="tl-arrow-label">flipped to ${changes[i+1].status.toUpperCase()} after ${durationLabel}</div>
-        </div>` : '';
-
-      return changeBlock + arrow;
+        </div>
+        ${!isLast?`
+        <div class="tl-flip">
+          <div class="tl-flip-spine"><span class="tl-flip-icon">⇅</span></div>
+          <div class="tl-flip-label">flipped to ${displayChanges[i+1].status.toUpperCase()} after ${duration}</div>
+        </div>`:''}`;
     }).join('');
 
   }catch(err){
